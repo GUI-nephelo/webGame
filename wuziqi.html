@@ -91,8 +91,7 @@
             var clockBBox = clock[0].getBBox();
             var chessboardBBox = cb[0].getBBox();
             
-
-            if(width>height){//竖屏
+            if(width>height){//portrait
                 cb.transform({"translate":[10,(viewBox[3]-chessboardBBox["height"])/2]});
                 clock.transform({"translate":[110,(viewBox[3]-clockBBox["height"])/2]});    
             }else{
