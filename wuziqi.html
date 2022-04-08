@@ -22,7 +22,7 @@
         @media all and (orientation: landscape) {
             svg {
                 display: flex;
-                width: 200vh;
+                width: 190vh;
                 margin: auto 0;
             }
         }
@@ -56,23 +56,14 @@
         </svg>
         
     </body>
+    <script src="./js/svgLib.js"></script>
     <script>
-        function makeSVG(tag, attrs){
-            var el= document.createElementNS('http://www.w3.org/2000/svg', tag);
-            for (var k in attrs) 
-                el.setAttribute(k, attrs[k]);
-            return el;
-        }         
-        $.fn.transform = function(parm){
-            p="";
-            for(var i in parm){
-                p+=i+"("+parm[i].join()+") "
-            }
-            $(this).attr("transform",p)
-        }
+        var cbS = $(".chessboardSub");
+        var cb = $(".chessboard");
+        var clock = $(".clock");
+
         function staticView(){
             var cubeLen=5.7,cubes=16; 
-            var cbS = $(".chessboardSub");
             cbS.append(makeSVG("rect",{"height":cubeLen*cubes,"width":cubeLen*cubes}));
             for(var i=1;i<cubes;i++){
                 cbS.append(makeSVG("line",{"x1":cubeLen*i,"x2":cubeLen*i,"y1":0,"y2":cubeLen*cubes}));
@@ -85,11 +76,11 @@
             cbS.append(makeSVG("circle",{cx:cubeLen*4,cy:cubeLen*12,r:1,fill:"#fff"}))
 
             var subBBox = cbS[0].getBBox();
-            var chessboardBBox = $(".chessboard")[0].getBBox();
+            var chessboardBBox = cb[0].getBBox();
             cbS.transform({"translate":[(chessboardBBox["width"]-subBBox["width"])/2,(chessboardBBox["height"]-subBBox["height"])/2]})
             
             cbS.click(e=>{
-                var offset = $(".chessboardSub")[0].getBoundingClientRect()
+                var offset = cbS[0].getBoundingClientRect()
                 console.log((e.pageX-Math.round(offset["x"]))*(subBBox["width"]/offset["width"]),(e.pageY-Math.round(offset["y"]))*(subBBox["height"]/offset["height"]))
             })
 
@@ -97,17 +88,16 @@
 
         function viewResize(width,height){
             var viewBox = $("#controls").attr("viewBox").split(" ");
-            var clockBBox = $(".clock")[0].getBBox();
-            var chessboardBBox = $(".chessboard")[0].getBBox();
+            var clockBBox = clock[0].getBBox();
+            var chessboardBBox = cb[0].getBBox();
             
 
-            if(width>height){
-                //$(".chessboard").attr("transform","translate(10,"+(viewBox[3]-chessboardBBox["height"])/2+")");
-                $(".chessboard").transform({"translate":[10,(viewBox[3]-chessboardBBox["height"])/2]});
-                $(".clock").transform({"translate":[110,(viewBox[3]-clockBBox["height"])/2]});    
+            if(width>height){//竖屏
+                cb.transform({"translate":[10,(viewBox[3]-chessboardBBox["height"])/2]});
+                clock.transform({"translate":[110,(viewBox[3]-clockBBox["height"])/2]});    
             }else{
-                $(".chessboard").transform({"translate":[(viewBox[2]-chessboardBBox["width"])/2,10]});
-                $(".clock").transform({"translate":[(viewBox[2]-clockBBox["width"])/2,100]});
+                cb.transform({"translate":[(viewBox[2]-chessboardBBox["width"])/2,10]});
+                clock.transform({"translate":[(viewBox[2]-clockBBox["width"])/2,109]});
             }
         }
 
@@ -123,7 +113,7 @@
             body.height(winHeight)
             body.width(winWidth)
             var orz = winHeight>winWidth;
-            $("#controls").attr("viewBox","0 0 "+(orz?100:200)+" "+(orz?200:100));
+            $("#controls").attr("viewBox","0 0 "+(orz?100:190)+" "+(orz?190:100));
 
             viewResize(winWidth,winHeight)
         }
