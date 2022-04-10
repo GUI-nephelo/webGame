@@ -61,9 +61,9 @@
         var cbS = $(".chessboardSub");
         var cb = $(".chessboard");
         var clock = $(".clock");
+        var cubeLen=5.8,cubes=16; 
 
         function staticView(){
-            var cubeLen=5.7,cubes=16; 
             cbS.append(makeSVG("rect",{"height":cubeLen*cubes,"width":cubeLen*cubes}));
             for(var i=1;i<cubes;i++){
                 cbS.append(makeSVG("line",{"x1":cubeLen*i,"x2":cubeLen*i,"y1":0,"y2":cubeLen*cubes}));
@@ -80,8 +80,11 @@
             cbS.transform({"translate":[(chessboardBBox["width"]-subBBox["width"])/2,(chessboardBBox["height"]-subBBox["height"])/2]})
             
             cbS.click(e=>{
-                var offset = cbS[0].getBoundingClientRect()
-                console.log((e.pageX-Math.round(offset["x"]))*(subBBox["width"]/offset["width"]),(e.pageY-Math.round(offset["y"]))*(subBBox["height"]/offset["height"]))
+                var offset = cbS[0].getBoundingClientRect();
+                var x = (e.pageX-Math.round(offset["x"]))//*(subBBox["width"]/offset["width"]);
+                var y = (e.pageY-Math.round(offset["y"]))//*(subBBox["height"]/offset["height"]);
+                console.log(Math.round(x),Math.round(y),e,offset)
+                //console.log(Math.round(*2/cubes),Math.round(*2/cubes))
             })
 
         }
@@ -90,7 +93,7 @@
             var viewBox = $("#controls").attr("viewBox").split(" ");
             var clockBBox = clock[0].getBBox();
             var chessboardBBox = cb[0].getBBox();
-            
+
             if(width>height){//portrait
                 cb.transform({"translate":[10,(viewBox[3]-chessboardBBox["height"])/2]});
                 clock.transform({"translate":[110,(viewBox[3]-clockBBox["height"])/2]});    
