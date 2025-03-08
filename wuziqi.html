@@ -1,127 +1,138 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>五子棋</title>
-        <script src="https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js"></script>
-    </head>
-    <style>
+
+<head>
+    <title>五子棋</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous">
+        </script>
+</head>
+<style>
+    svg {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        overflow: hidden;
+    }
+
+    @media all and (orientation: portrait) {
         svg {
-            -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                    user-select: none;
-            overflow: hidden;
+            display: flex;
+            height: 100vh;
+            margin: 0 auto;
         }
-        @media all and (orientation: portrait) {
-            svg {
-                display: flex;
-                height: 100vh;
-                margin: 0 auto;
-            }
-        }
-        @media all and (orientation: landscape) {
-            svg {
-                display: flex;
-                width: 190vh;
-                margin: auto 0;
-            }
-        }
-        body{
-            background-color: black;
-        }
-        .chessboard{
-            /*display: none;*/
-        }
-        .clock{
-            margin: 15px;
-        }
-        .clock :hover{
-            /*display: none;*/
-            transform:scale(100)
-        }
-    </style>
-    <body>
-        <svg id="controls" viewBox="0 0 100 200" stroke="#fff" stroke-width="0.5">
-            <g class="clock">
-                <path d="M4.5,5L9.5,5M7,5L7,8" stroke-width="1"></path>
-                <circle cx="7" cy="15" r="7"></circle>
-                <circle cx="7" cy="15" r="5" stroke-width="0.8" stroke-dasharray=".5 1"></circle>
-                <circle cx="7" cy="15" r="1" fill="#fff"></circle>
-                <path id="timer" d="M7,15L7,9.5" stroke-width="0.6"></path>
-            </g>
-            <g class="chessboard">
-                <rect width="97" height="97" stroke="#fff" style="color: white;" rx="3"/>
-                <g class="chessboardSub"></g>
-            </g>
-        </svg>
-        
-    </body>
-    <script src="./js/svgLib.js"></script>
-    <script>
-        var cbS = $(".chessboardSub");
-        var cb = $(".chessboard");
-        var clock = $(".clock");
-        var cubeLen=5.8,cubes=16; 
+    }
 
-        function staticView(){
-            cbS.append(makeSVG("rect",{"height":cubeLen*cubes,"width":cubeLen*cubes}));
-            for(var i=1;i<cubes;i++){
-                cbS.append(makeSVG("line",{"x1":cubeLen*i,"x2":cubeLen*i,"y1":0,"y2":cubeLen*cubes}));
-                cbS.append(makeSVG("line",{"y1":cubeLen*i,"y2":cubeLen*i,"x1":0,"x2":cubeLen*cubes}));
-            }
-            cbS.append(makeSVG("circle",{cx:cubeLen*8,cy:cubeLen*8,r:1,fill:"#fff"}))
-            cbS.append(makeSVG("circle",{cx:cubeLen*4,cy:cubeLen*4,r:1,fill:"#fff"}))
-            cbS.append(makeSVG("circle",{cx:cubeLen*12,cy:cubeLen*12,r:1,fill:"#fff"}))
-            cbS.append(makeSVG("circle",{cx:cubeLen*12,cy:cubeLen*4,r:1,fill:"#fff"}))
-            cbS.append(makeSVG("circle",{cx:cubeLen*4,cy:cubeLen*12,r:1,fill:"#fff"}))
-
-            var subBBox = cbS[0].getBBox();
-            var chessboardBBox = cb[0].getBBox();
-            cbS.transform({"translate":[(chessboardBBox["width"]-subBBox["width"])/2,(chessboardBBox["height"]-subBBox["height"])/2]})
-            
-            cbS.click(e=>{
-                var offset = cbS[0].getBoundingClientRect();
-                var x = (e.pageX-Math.round(offset["x"]))//*(subBBox["width"]/offset["width"]);
-                var y = (e.pageY-Math.round(offset["y"]))//*(subBBox["height"]/offset["height"]);
-                console.log(Math.round(x),Math.round(y),e,offset)
-                //console.log(Math.round(*2/cubes),Math.round(*2/cubes))
-            })
-
+    @media all and (orientation: landscape) {
+        svg {
+            display: flex;
+            width: 190vh;
+            margin: auto 0;
         }
+    }
 
-        function viewResize(width,height){
-            var viewBox = $("#controls").attr("viewBox").split(" ");
-            var clockBBox = clock[0].getBBox();
-            var chessboardBBox = cb[0].getBBox();
+    body {
+        background-color: black;
+    }
 
-            if(width>height){//portrait
-                cb.transform({"translate":[10,(viewBox[3]-chessboardBBox["height"])/2]});
-                clock.transform({"translate":[110,(viewBox[3]-clockBBox["height"])/2]});    
-            }else{
-                cb.transform({"translate":[(viewBox[2]-chessboardBBox["width"])/2,10]});
-                clock.transform({"translate":[(viewBox[2]-clockBBox["width"])/2,109]});
-            }
+    .chessboard {
+        /*display: none;*/
+    }
+
+    .clock {
+        margin: 15px;
+    }
+
+    .clock :hover {
+        /*display: none;*/
+        transform: scale(100)
+    }
+</style>
+
+<body>
+    <svg id="controls" viewBox="0 0 100 200" stroke="#fff" stroke-width="0.5">
+        <g class="clock">
+            <path d="M4.5,5L9.5,5M7,5L7,8" stroke-width="1"></path>
+            <circle cx="7" cy="15" r="7"></circle>
+            <circle cx="7" cy="15" r="5" stroke-width="0.8" stroke-dasharray=".5 1"></circle>
+            <circle cx="7" cy="15" r="1" fill="#fff"></circle>
+            <path id="timer" d="M7,15L7,9.5" stroke-width="0.6"></path>
+        </g>
+        <g class="chessboard">
+            <rect width="97" height="97" stroke="#fff" style="color: white;" rx="3" />
+            <g class="chessboardSub"></g>
+        </g>
+    </svg>
+
+</body>
+<script src="./js/svgLib.js"></script>
+<script>
+    var cbS = $(".chessboardSub");
+    var cb = $(".chessboard");
+    var clock = $(".clock");
+    var cubeLen = 5.8, cubes = 16;
+
+    function staticView() {
+        cbS.append(makeSVG("rect", { "height": cubeLen * cubes, "width": cubeLen * cubes }));
+        for (var i = 1; i < cubes; i++) {
+            cbS.append(makeSVG("line", { "x1": cubeLen * i, "x2": cubeLen * i, "y1": 0, "y2": cubeLen * cubes }));
+            cbS.append(makeSVG("line", { "y1": cubeLen * i, "y2": cubeLen * i, "x1": 0, "x2": cubeLen * cubes }));
         }
+        cbS.append(makeSVG("circle", { cx: cubeLen * 8, cy: cubeLen * 8, r: 1, fill: "#fff" }))
+        cbS.append(makeSVG("circle", { cx: cubeLen * 4, cy: cubeLen * 4, r: 1, fill: "#fff" }))
+        cbS.append(makeSVG("circle", { cx: cubeLen * 12, cy: cubeLen * 12, r: 1, fill: "#fff" }))
+        cbS.append(makeSVG("circle", { cx: cubeLen * 12, cy: cubeLen * 4, r: 1, fill: "#fff" }))
+        cbS.append(makeSVG("circle", { cx: cubeLen * 4, cy: cubeLen * 12, r: 1, fill: "#fff" }))
 
-        function clockTick(t){
-            $("#timer").attr("transform","rotate("+t+",7,15)");
+        var subBBox = cbS[0].getBBox();
+        var chessboardBBox = cb[0].getBBox();
+        cbS.transform({ "translate": [(chessboardBBox["width"] - subBBox["width"]) / 2, (chessboardBBox["height"] - subBBox["height"]) / 2] })
+
+        cbS.click(e => {
+            var offset = cbS[0].getBoundingClientRect();
+            var x = (e.pageX - Math.round(offset["x"]))//*(subBBox["width"]/offset["width"]);
+            var y = (e.pageY - Math.round(offset["y"]))//*(subBBox["height"]/offset["height"]);
+            console.log(Math.round(x), Math.round(y), e, offset)
+            //console.log(Math.round(*2/cubes),Math.round(*2/cubes))
+        })
+
+    }
+
+    function viewResize(width, height) {
+        var viewBox = $("#controls").attr("viewBox").split(" ");
+        var clockBBox = clock[0].getBBox();
+        var chessboardBBox = cb[0].getBBox();
+
+        if (width > height) {//portrait
+            cb.transform({ "translate": [10, (viewBox[3] - chessboardBBox["height"]) / 2] });
+            clock.transform({ "translate": [110, (viewBox[3] - clockBBox["height"]) / 2] });
+        } else {
+            cb.transform({ "translate": [(viewBox[2] - chessboardBBox["width"]) / 2, 10] });
+            clock.transform({ "translate": [(viewBox[2] - clockBBox["width"]) / 2, 109] });
         }
+    }
 
-        function resize(){
-            var winHeight = window.innerHeight;
-            var winWidth = window.innerWidth;
-            
-            body = $("#main")
-            body.height(winHeight)
-            body.width(winWidth)
-            var orz = winHeight>winWidth;
-            $("#controls").attr("viewBox","0 0 "+(orz?100:190)+" "+(orz?190:100));
+    function clockTick(t) {
+        $("#timer").attr("transform", "rotate(" + t + ",7,15)");
+    }
 
-            viewResize(winWidth,winHeight)
-        }
-        staticView();
-        window.onresize = resize;
-        window.onload = resize;
+    function resize() {
+        var winHeight = window.innerHeight;
+        var winWidth = window.innerWidth;
 
-    </script>
+        body = $("#main")
+        body.height(winHeight)
+        body.width(winWidth)
+        var orz = winHeight > winWidth;
+        $("#controls").attr("viewBox", "0 0 " + (orz ? 100 : 190) + " " + (orz ? 190 : 100));
+
+        viewResize(winWidth, winHeight)
+    }
+    staticView();
+    window.onresize = resize;
+    window.onload = resize;
+
+</script>
+
 </html>
